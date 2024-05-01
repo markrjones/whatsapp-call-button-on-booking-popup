@@ -1,501 +1,471 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2761
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
-{\colortbl;\red255\green255\blue255;\red107\green0\blue1;\red255\green255\blue255;\red0\green0\blue0;
-\red0\green0\blue255;\red144\green1\blue18;\red19\green118\blue70;\red15\green112\blue1;\red220\green0\blue5;
-}
-{\*\expandedcolortbl;;\cssrgb\c50196\c0\c0;\cssrgb\c100000\c100000\c100000;\cssrgb\c0\c0\c0;
-\cssrgb\c0\c0\c100000;\cssrgb\c63922\c8235\c8235;\cssrgb\c3529\c52549\c34510;\cssrgb\c0\c50196\c0;\cssrgb\c89804\c0\c0;
-}
-\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\deftab720
-\pard\pardeftab720\partightenfactor0
+<?php
+if (isset($data)) :
 
-\f0\fs24 \cf2 \cb3 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\pard\pardeftab720\partightenfactor0
-\cf5 \cb3 \strokec5 if\cf0 \strokec4  (isset($data)) :\cb1 \
-\
-\
-\cf5 \cb3 \strokec5 endif\cf0 \strokec4 ;\cb1 \
-\cf5 \cb3 \strokec5 if\cf0 \strokec4  ($data->comment == \cf6 \strokec6 'owner reservations'\cf0 \strokec4 ) \{\cb1 \
-\pard\pardeftab720\partightenfactor0
-\cf0 \cb3     \cf5 \strokec5 return\cf0 \strokec4 ;\cb1 \
-\cb3 \}\cb1 \
-\cb3 $class = array();\cb1 \
-\cb3 $tag = array();\cb1 \
-\cb3 $show_approve = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3 $show_reject = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3 $show_cancel = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\
-\cb3 $payment_method = \cf6 \strokec6 ''\cf0 \strokec4 ;\cb1 \
-\pard\pardeftab720\partightenfactor0
-\cf5 \cb3 \strokec5 if\cf0 \strokec4  (isset($data->order_id) && !empty($data->order_id) && $data->status == \cf6 \strokec6 'confirmed'\cf0 \strokec4 ) \{\cb1 \
-\pard\pardeftab720\partightenfactor0
-\cf0 \cb3     $payment_method = get_post_meta($data->order_id, \cf6 \strokec6 '_payment_method'\cf0 \strokec4 , \cf5 \strokec5 true\cf0 \strokec4 );\cb1 \
-\cb3     \cf5 \strokec5 if\cf0 \strokec4  (get_option(\cf6 \strokec6 'listeo_disable_payments'\cf0 \strokec4 )) \{\cb1 \
-\cb3         $payment_method = \cf6 \strokec6 'cod'\cf0 \strokec4 ;\cb1 \
-\cb3     \}\cb1 \
-\cb3 \}\cb1 \
-\cb3 $_payment_option = get_post_meta($data->listing_id, \cf6 \strokec6 '_payment_option'\cf0 \strokec4 , \cf5 \strokec5 true\cf0 \strokec4 );\cb1 \
-\pard\pardeftab720\partightenfactor0
-\cf5 \cb3 \strokec5 if\cf0 \strokec4  (empty($_payment_option)) \{\cb1 \
-\pard\pardeftab720\partightenfactor0
-\cf0 \cb3     $_payment_option = \cf6 \strokec6 'pay_now'\cf0 \strokec4 ;\cb1 \
-\cb3 \}\cb1 \
-\pard\pardeftab720\partightenfactor0
-\cf5 \cb3 \strokec5 if\cf0 \strokec4  ($_payment_option == \cf6 \strokec6 "pay_cash"\cf0 \strokec4 ) \{\cb1 \
-\pard\pardeftab720\partightenfactor0
-\cf0 \cb3     $payment_method = \cf6 \strokec6 'cod'\cf0 \strokec4 ;\cb1 \
-\cb3 \}\cb1 \
-\
-\cb3 $show_contact = (get_option(\cf6 \strokec6 'listeo_lock_contact_info_to_paid_bookings'\cf0 \strokec4 )) ? \cf5 \strokec5 false\cf0 \strokec4  : \cf5 \strokec5 true\cf0 \strokec4 ;\cb1 \
-\
-\pard\pardeftab720\partightenfactor0
-\cf5 \cb3 \strokec5 switch\cf0 \strokec4  ($data->status) \{\cb1 \
-\pard\pardeftab720\partightenfactor0
-\cf0 \cb3     \cf5 \strokec5 case\cf0 \strokec4  \cf6 \strokec6 'waiting'\cf0 \strokec4 :\cb1 \
-\cb3         $class[] = \cf6 \strokec6 'waiting-booking'\cf0 \strokec4 ;\cb1 \
-\cb3         $tag[] = \cf6 \strokec6 '<span class="booking-status pending">'\cf0 \strokec4  . esc_html__(\cf6 \strokec6 'Pending'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ) . \cf6 \strokec6 '</span>'\cf0 \strokec4 ;\cb1 \
-\cb3         $show_approve = \cf5 \strokec5 true\cf0 \strokec4 ;\cb1 \
-\cb3         $show_reject = \cf5 \strokec5 true\cf0 \strokec4 ;\cb1 \
-\cb3         $show_renew = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         \cf5 \strokec5 break\cf0 \strokec4 ;\cb1 \
-\
-\cb3     \cf5 \strokec5 case\cf0 \strokec4  \cf6 \strokec6 'pay_to_confirm'\cf0 \strokec4 :\cb1 \
-\cb3         $class[] = \cf6 \strokec6 'waiting-booking'\cf0 \strokec4 ;\cb1 \
-\cb3         \cf5 \strokec5 if\cf0 \strokec4  ($data->price > \cf7 \strokec7 0\cf0 \strokec4 ) \{\cb1 \
-\cb3             $tag[] = \cf6 \strokec6 '<span class="booking-status unpaid">'\cf0 \strokec4  . esc_html__(\cf6 \strokec6 'Waiting for user payment'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ) . \cf6 \strokec6 '</span>'\cf0 \strokec4 ;\cb1 \
-\cb3         \}\cb1 \
-\
-\cb3         $show_approve = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_reject = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_renew = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_cancel = \cf5 \strokec5 true\cf0 \strokec4 ;\cb1 \
-\cb3         \cf5 \strokec5 break\cf0 \strokec4 ;\cb1 \
-\
-\cb3     \cf5 \strokec5 case\cf0 \strokec4  \cf6 \strokec6 'confirmed'\cf0 \strokec4 :\cb1 \
-\cb3         $class[] = \cf6 \strokec6 'approved-booking'\cf0 \strokec4 ;\cb1 \
-\cb3         $tag[] = \cf6 \strokec6 '<span  class="booking-status">'\cf0 \strokec4  . esc_html__(\cf6 \strokec6 'Approved'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ) . \cf6 \strokec6 '</span>'\cf0 \strokec4 ;\cb1 \
-\
-\cb3         \cf5 \strokec5 if\cf0 \strokec4  ($data->price > \cf7 \strokec7 0\cf0 \strokec4 ) \{\cb1 \
-\cb3             \cf5 \strokec5 if\cf0 \strokec4  ($_payment_option == \cf6 \strokec6 "pay_cash"\cf0 \strokec4 ) \{\cb1 \
-\cb3                 $tag[] = \cf6 \strokec6 '<span class="booking-status unpaid">'\cf0 \strokec4  . esc_html__(\cf6 \strokec6 'Cash payment'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ) . \cf6 \strokec6 '</span>'\cf0 \strokec4 ;\cb1 \
-\cb3             \} \cf5 \strokec5 else\cf0 \strokec4  \{\cb1 \
-\cb3                 $tag[] = \cf6 \strokec6 '<span class="booking-status unpaid">'\cf0 \strokec4  . esc_html__(\cf6 \strokec6 'Unpaid'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ) . \cf6 \strokec6 '</span>'\cf0 \strokec4 ;\cb1 \
-\cb3             \}\cb1 \
-\cb3         \}\cb1 \
-\
-\cb3         $show_approve = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_reject = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_renew = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_cancel = \cf5 \strokec5 true\cf0 \strokec4 ;\cb1 \
-\cb3         \cf5 \strokec5 break\cf0 \strokec4 ;\cb1 \
-\
-\cb3     \cf5 \strokec5 case\cf0 \strokec4  \cf6 \strokec6 'paid'\cf0 \strokec4 :\cb1 \
-\
-\cb3         $class[] = \cf6 \strokec6 'approved-booking'\cf0 \strokec4 ;\cb1 \
-\cb3         $tag[] = \cf6 \strokec6 '<span class="booking-status">'\cf0 \strokec4  . esc_html__(\cf6 \strokec6 'Approved'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ) . \cf6 \strokec6 '</span>'\cf0 \strokec4 ;\cb1 \
-\cb3         \cf5 \strokec5 if\cf0 \strokec4  ($data->price > \cf7 \strokec7 0\cf0 \strokec4 ) \{\cb1 \
-\cb3             $tag[] = \cf6 \strokec6 '<span class="booking-status paid">'\cf0 \strokec4  . esc_html__(\cf6 \strokec6 'Paid'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ) . \cf6 \strokec6 '</span>'\cf0 \strokec4 ;\cb1 \
-\cb3         \}\cb1 \
-\cb3         $show_approve = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_renew = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_reject = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_cancel = \cf5 \strokec5 true\cf0 \strokec4 ;\cb1 \
-\cb3         $show_contact = \cf5 \strokec5 true\cf0 \strokec4 ;\cb1 \
-\cb3         \cf5 \strokec5 break\cf0 \strokec4 ;\cb1 \
-\
-\cb3     \cf5 \strokec5 case\cf0 \strokec4  \cf6 \strokec6 'cancelled'\cf0 \strokec4 :\cb1 \
-\
-\cb3         $class[] = \cf6 \strokec6 'canceled-booking'\cf0 \strokec4 ;\cb1 \
-\cb3         $tag[] = \cf6 \strokec6 '<span class="booking-status">'\cf0 \strokec4  . esc_html__(\cf6 \strokec6 'Canceled'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ) . \cf6 \strokec6 '</span>'\cf0 \strokec4 ;\cb1 \
-\cb3         $show_approve = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_reject = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_renew = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_delete = \cf5 \strokec5 true\cf0 \strokec4 ;\cb1 \
-\cb3         \cf5 \strokec5 break\cf0 \strokec4 ;\cb1 \
-\
-\
-\cb3     \cf5 \strokec5 case\cf0 \strokec4  \cf6 \strokec6 'expired'\cf0 \strokec4 :\cb1 \
-\
-\cb3         $class[] = \cf6 \strokec6 'expired-booking'\cf0 \strokec4 ;\cb1 \
-\cb3         $tag[] = \cf6 \strokec6 '<span class="booking-status">'\cf0 \strokec4  . esc_html__(\cf6 \strokec6 'Expired'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ) . \cf6 \strokec6 '</span>'\cf0 \strokec4 ;\cb1 \
-\cb3         $show_approve = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_reject = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_renew = \cf5 \strokec5 true\cf0 \strokec4 ;\cb1 \
-\cb3         $show_delete = \cf5 \strokec5 true\cf0 \strokec4 ;\cb1 \
-\cb3         \cf5 \strokec5 break\cf0 \strokec4 ;\cb1 \
-\
-\cb3     \cf5 \strokec5 default\cf0 \strokec4 :\cb1 \
-\cb3         $show_approve = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_reject = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_renew = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $show_cancel = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         \cf5 \strokec5 break\cf0 \strokec4 ;\cb1 \
-\cb3 \}\cb1 \
-\
-\pard\pardeftab720\partightenfactor0
-\cf8 \cb3 \strokec8 //get order data\cf0 \cb1 \strokec4 \
-\pard\pardeftab720\partightenfactor0
-\cf5 \cb3 \strokec5 if\cf0 \strokec4  ($data->status != \cf6 \strokec6 'paid'\cf0 \strokec4  && isset($data->order_id) && !empty($data->order_id) && $data->status == \cf6 \strokec6 'confirmed'\cf0 \strokec4 ) \{\cb1 \
-\pard\pardeftab720\partightenfactor0
-\cf0 \cb3     $order = wc_get_order($data->order_id);\cb1 \
-\cb3     \cf5 \strokec5 if\cf0 \strokec4  ($order) \{\cb1 \
-\cb3         $payment_url = $order->get_checkout_payment_url();\cb1 \
-\
-\cb3         $order_data = $order->get_data();\cb1 \
-\
-\cb3         $order_status = $order_data[\cf6 \strokec6 'status'\cf0 \strokec4 ];\cb1 \
-\cb3     \}\cb1 \
-\cb3     \cf5 \strokec5 if\cf0 \strokec4  (\cf5 \strokec5 new\cf0 \strokec4  DateTime() > \cf5 \strokec5 new\cf0 \strokec4  DateTime($data->expiring)) \{\cb1 \
-\cb3         $payment_url = \cf5 \strokec5 false\cf0 \strokec4 ;\cb1 \
-\cb3         $class[] = \cf6 \strokec6 'expired-booking'\cf0 \strokec4 ;\cb1 \
-\cb3         unset($tag[\cf7 \strokec7 1\cf0 \strokec4 ]);\cb1 \
-\cb3         $tag[] = \cf6 \strokec6 '<span class="booking-status">'\cf0 \strokec4  . esc_html__(\cf6 \strokec6 'Expired'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ) . \cf6 \strokec6 '</span>'\cf0 \strokec4 ;\cb1 \
-\cb3         $show_delete = \cf5 \strokec5 true\cf0 \strokec4 ;\cb1 \
-\cb3     \}\cb1 \
-\cb3 \}\cb1 \
-\
-\
-\pard\pardeftab720\partightenfactor0
-\cf2 \cb3 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cf2 \cb3 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  echo implode(\cf6 \strokec6 ' '\cf0 \strokec4 , $class); \cf2 \strokec2 ?>\cf5 \strokec5 "\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "booking-list-\cf2 \strokec2 <?php\cf0 \strokec4  echo esc_attr($data->ID); \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\
-\
-\pard\pardeftab720\partightenfactor0
-\cf0 \cb3     \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "list-box-listing bookings"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3         \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "list-box-listing-content"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3             \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <h3\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "title"\cf2 \strokec2 ><a\cf0 \strokec4  \cf9 \strokec9 href\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  echo get_permalink($data->listing_id); \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 ><?php\cf0 \strokec4  echo get_the_title($data->listing_id); \cf2 \strokec2 ?></a>\cf0 \strokec4  \cf2 \strokec2 <?php\cf0 \strokec4  echo implode(\cf6 \strokec6 ' '\cf0 \strokec4 , $tag); \cf2 \strokec2 ?></h3>\cf0 \cb1 \strokec4 \
-\
-\cb3                 \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner-booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 <h5><?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Booking Date:'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></h5>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 <ul\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\cb3                         \cf8 \strokec8 //get post type to show proper date\cf0 \cb1 \strokec4 \
-\cb3                         $listing_type = get_post_meta($data->listing_id, \cf6 \strokec6 '_listing_type'\cf0 \strokec4 , \cf5 \strokec5 true\cf0 \strokec4 );\cb1 \
-\
-\cb3                         \cf5 \strokec5 if\cf0 \strokec4  ($listing_type == \cf6 \strokec6 'rental'\cf0 \strokec4 ) \{ \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "highlighted"\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "date"\cf2 \strokec2 ><?php\cf0 \strokec4  echo date_i18n(get_option(\cf6 \strokec6 'date_format'\cf0 \strokec4 ), strtotime($data->date_start)); \cf2 \strokec2 ?>\cf0 \strokec4  - \cf2 \strokec2 <?php\cf0 \strokec4  echo date_i18n(get_option(\cf6 \strokec6 'date_format'\cf0 \strokec4 ), strtotime($data->date_end)); \cf2 \strokec2 ?></li>\cf0 \cb1 \strokec4 \
-\
-\cb3                         \cf2 \strokec2 <?php\cf0 \strokec4  \} \cf5 \strokec5 else\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($listing_type == \cf6 \strokec6 'service'\cf0 \strokec4 ) \{\cb1 \
-\cb3                         \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "highlighted"\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "date"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  echo date_i18n(get_option(\cf6 \strokec6 'date_format'\cf0 \strokec4 ), strtotime($data->date_start)); \cf2 \strokec2 ?>\cf0 \strokec4  \cf2 \strokec2 <?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'at'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\cb3                                 $time_start = date_i18n(get_option(\cf6 \strokec6 'time_format'\cf0 \strokec4 ), strtotime($data->date_start));\cb1 \
-\cb3                                 $time_end = date_i18n(get_option(\cf6 \strokec6 'time_format'\cf0 \strokec4 ), strtotime($data->date_end)); \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  echo $time_start \cf2 \strokec2 ?>\cf0 \strokec4  \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($time_start != $time_end) echo \cf6 \strokec6 '- '\cf0 \strokec4  . $time_end; \cf2 \strokec2 ?></li>\cf0 \cb1 \strokec4 \
-\
-\cb3                         \cf2 \strokec2 <?php\cf0 \strokec4  \} \cf5 \strokec5 else\cf0 \strokec4  \{\cb1 \
-\cb3                             \cf8 \strokec8 //event \cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "highlighted"\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "date"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\cb3                                 $meta_value = get_post_meta($data->listing_id, \cf6 \strokec6 '_event_date'\cf0 \strokec4 , \cf5 \strokec5 true\cf0 \strokec4 );\cb1 \
-\cb3                                 $meta_value_date = explode(\cf6 \strokec6 ' '\cf0 \strokec4 , $meta_value, \cf7 \strokec7 2\cf0 \strokec4 );\cb1 \
-\
-\cb3                                 $meta_value_date[\cf7 \strokec7 0\cf0 \strokec4 ] = str_replace(\cf6 \strokec6 '/'\cf0 \strokec4 , \cf6 \strokec6 '-'\cf0 \strokec4 , $meta_value_date[\cf7 \strokec7 0\cf0 \strokec4 ]);\cb1 \
-\cb3                                 $meta_value = date_i18n(get_option(\cf6 \strokec6 'date_format'\cf0 \strokec4 ), strtotime($meta_value_date[\cf7 \strokec7 0\cf0 \strokec4 ]));\cb1 \
-\
-\
-\cb3                                 \cf8 \strokec8 //echo strtotime(end($meta_value_date));\cf0 \cb1 \strokec4 \
-\cb3                                 \cf8 \strokec8 //echo date( get_option( 'time_format' ), strtotime(end($meta_value_date)));\cf0 \cb1 \strokec4 \
-\cb3                                 \cf5 \strokec5 if\cf0 \strokec4  (isset($meta_value_date[\cf7 \strokec7 1\cf0 \strokec4 ])) \{\cb1 \
-\cb3                                     $time = str_replace(\cf6 \strokec6 '-'\cf0 \strokec4 , \cf6 \strokec6 ''\cf0 \strokec4 , $meta_value_date[\cf7 \strokec7 1\cf0 \strokec4 ]);\cb1 \
-\cb3                                     $meta_value .= esc_html__(\cf6 \strokec6 ' at '\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 );\cb1 \
-\cb3                                     $meta_value .= date_i18n(get_option(\cf6 \strokec6 'time_format'\cf0 \strokec4 ), strtotime($time));\cb1 \
-\cb3                                 \}\cb1 \
-\cb3                                 echo $meta_value;\cb1 \
-\
-\cb3                                 $meta_value = get_post_meta($data->listing_id, \cf6 \strokec6 '_event_date_end'\cf0 \strokec4 , \cf5 \strokec5 true\cf0 \strokec4 );\cb1 \
-\cb3                                 \cf5 \strokec5 if\cf0 \strokec4  (isset($meta_value) && !empty($meta_value)) :\cb1 \
-\
-\cb3                                     $meta_value_date = explode(\cf6 \strokec6 ' '\cf0 \strokec4 , $meta_value, \cf7 \strokec7 2\cf0 \strokec4 );\cb1 \
-\
-\cb3                                     $meta_value_date[\cf7 \strokec7 0\cf0 \strokec4 ] = str_replace(\cf6 \strokec6 '/'\cf0 \strokec4 , \cf6 \strokec6 '-'\cf0 \strokec4 , $meta_value_date[\cf7 \strokec7 0\cf0 \strokec4 ]);\cb1 \
-\cb3                                     $meta_value = date_i18n(get_option(\cf6 \strokec6 'date_format'\cf0 \strokec4 ), strtotime($meta_value_date[\cf7 \strokec7 0\cf0 \strokec4 ]));\cb1 \
-\
-\
-\cb3                                     \cf8 \strokec8 //echo strtotime(end($meta_value_date));\cf0 \cb1 \strokec4 \
-\cb3                                     \cf8 \strokec8 //echo date( get_option( 'time_format' ), strtotime(end($meta_value_date)));\cf0 \cb1 \strokec4 \
-\cb3                                     \cf5 \strokec5 if\cf0 \strokec4  (isset($meta_value_date[\cf7 \strokec7 1\cf0 \strokec4 ])) \{\cb1 \
-\cb3                                         $time = str_replace(\cf6 \strokec6 '-'\cf0 \strokec4 , \cf6 \strokec6 ''\cf0 \strokec4 , $meta_value_date[\cf7 \strokec7 1\cf0 \strokec4 ]);\cb1 \
-\cb3                                         $meta_value .= esc_html__(\cf6 \strokec6 ' at '\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 );\cb1 \
-\cb3                                         $meta_value .= date_i18n(get_option(\cf6 \strokec6 'time_format'\cf0 \strokec4 ), strtotime($time));\cb1 \
-\cb3                                     \}\cb1 \
-\cb3                                     echo \cf6 \strokec6 ' - '\cf0 \strokec4  . $meta_value; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <?php\cf0 \strokec4  \}\cb1 \
-\cb3                         \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3                     \cf2 \strokec2 </ul>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  $details = json_decode($data->comment);\cb1 \
-\cb3                 \cf5 \strokec5 if\cf0 \strokec4  (\cb1 \
-\cb3                     (isset($details->childrens) && $details->childrens > \cf7 \strokec7 0\cf0 \strokec4 )\cb1 \
-\cb3                     ||\cb1 \
-\cb3                     (isset($details->adults) && $details->adults > \cf7 \strokec7 0\cf0 \strokec4 )\cb1 \
-\cb3                     ||\cb1 \
-\cb3                     (isset($details->tickets) && $details->tickets > \cf7 \strokec7 0\cf0 \strokec4 )\cb1 \
-\cb3                 ) \{ \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner-booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <h5><?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Booking Details:'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></h5>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <ul\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "highlighted"\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "details"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->childrens) && $details->childrens > \cf7 \strokec7 0\cf0 \strokec4 ) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                     \cf2 \strokec2 <?php\cf0 \strokec4  printf(_n(\cf6 \strokec6 '%d Child'\cf0 \strokec4 , \cf6 \strokec6 '%s Children'\cf0 \strokec4 , $details->childrens, \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ), $details->childrens) \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->adults)  && $details->adults > \cf7 \strokec7 0\cf0 \strokec4 ) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                     \cf2 \strokec2 <?php\cf0 \strokec4  printf(_n(\cf6 \strokec6 '%d Guest'\cf0 \strokec4 , \cf6 \strokec6 '%s Guests'\cf0 \strokec4 , $details->adults, \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ), $details->adults) \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->tickets)  && $details->tickets > \cf7 \strokec7 0\cf0 \strokec4 ) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                     \cf2 \strokec2 <?php\cf0 \strokec4  printf(_n(\cf6 \strokec6 '%d Ticket'\cf0 \strokec4 , \cf6 \strokec6 '%s Tickets'\cf0 \strokec4 , $details->tickets, \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ), $details->tickets) \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 </ul>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \} \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3                 \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\cb3                 $currency_abbr = get_option(\cf6 \strokec6 'listeo_currency'\cf0 \strokec4 );\cb1 \
-\cb3                 $currency_postion = get_option(\cf6 \strokec6 'listeo_currency_postion'\cf0 \strokec4 );\cb1 \
-\cb3                 $currency_symbol = Listeo_Core_Listing::get_currency_symbol($currency_abbr);\cb1 \
-\cb3                 $decimals = get_option(\cf6 \strokec6 'listeo_number_decimals'\cf0 \strokec4 , \cf7 \strokec7 2\cf0 \strokec4 );\cb1 \
-\
-\cb3                 \cf5 \strokec5 if\cf0 \strokec4  ($data->price) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner-booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <h5><?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Price:'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></h5>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <ul\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "highlighted"\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "price"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($currency_postion == \cf6 \strokec6 'before'\cf0 \strokec4 ) \{\cb1 \
-\cb3                                     echo $currency_symbol . \cf6 \strokec6 ' '\cf0 \strokec4 ;\cb1 \
-\cb3                                 \}\cb1 \
-\cb3                                 \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\cb3                                 \cf5 \strokec5 if\cf0 \strokec4  (is_numeric($data->price)) \{\cb1 \
-\cb3                                     echo number_format_i18n($data->price, $decimals);\cb1 \
-\cb3                                 \} \cf5 \strokec5 else\cf0 \strokec4  \{\cb1 \
-\cb3                                     echo esc_html($data->price);\cb1 \
-\cb3                                 \}; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($currency_postion == \cf6 \strokec6 'after'\cf0 \strokec4 ) \{\cb1 \
-\cb3                                     echo \cf6 \strokec6 ' '\cf0 \strokec4  . $currency_symbol;\cb1 \
-\cb3                                 \}  \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 </ul>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\
-\cb3                 \cf5 \strokec5 if\cf0 \strokec4  ($show_contact) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner-booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\
-\cb3                         \cf2 \strokec2 <h5><?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Client:'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></h5>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <ul\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "booking-list"\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "client"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->first_name) || isset($details->last_name)) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "name"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                                     \cf2 \strokec2 <a\cf0 \strokec4  \cf9 \strokec9 href\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  echo get_author_posts_url($data->bookings_author); \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 ><?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->first_name)) echo esc_html(stripslashes($details->first_name)); \cf2 \strokec2 ?>\cf0 \strokec4  \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->last_name)) echo esc_html(stripslashes($details->last_name)); \cf2 \strokec2 ?></a>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($show_contact && isset($details->email)) : \cf2 \strokec2 ?><li\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "email"\cf2 \strokec2 ><a\cf0 \strokec4  \cf9 \strokec9 href\cf0 \strokec4 =\cf5 \strokec5 "mailto:\cf2 \strokec2 <?php\cf0 \strokec4  echo esc_attr($details->email) \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 ><?php\cf0 \strokec4  echo esc_html($details->email); \cf2 \strokec2 ?></a></li>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($show_contact && isset($details->phone)) : \cf2 \strokec2 ?><li\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "phone"\cf2 \strokec2 ><a\cf0 \strokec4  \cf9 \strokec9 href\cf0 \strokec4 =\cf5 \strokec5 "tel:\cf2 \strokec2 <?php\cf0 \strokec4  echo esc_attr($details->phone) \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 ><?php\cf0 \strokec4  echo esc_html($details->phone); \cf2 \strokec2 ?></a></li>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 </ul>\cf0 \cb1 \strokec4 \
-\
-\cb3                     \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3                 \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\
-\cb3                 \cf5 \strokec5 if\cf0 \strokec4  ($show_contact && isset($details->billing_address_1) && !empty($details->billing_address_1)) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner-booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\
-\cb3                         \cf2 \strokec2 <h5><?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Address:'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></h5>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <ul\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "booking-list"\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "client"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->billing_address_1)) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "billing_address_1"\cf2 \strokec2 ><?php\cf0 \strokec4  echo esc_html(stripslashes($details->billing_address_1)); \cf2 \strokec2 ?>\cf0 \strokec4  \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->billing_address_1)) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "billing_postcode"\cf2 \strokec2 ><?php\cf0 \strokec4  echo esc_html(stripslashes($details->billing_postcode)); \cf2 \strokec2 ?>\cf0 \strokec4  \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->billing_city)) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "billing_city"\cf2 \strokec2 ><?php\cf0 \strokec4  echo esc_html(stripslashes($details->billing_city)); \cf2 \strokec2 ?>\cf0 \strokec4  \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->billing_country)) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "billing_country"\cf2 \strokec2 ><?php\cf0 \strokec4  echo esc_html(stripslashes($details->billing_country)); \cf2 \strokec2 ?>\cf0 \strokec4  \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3                         \cf2 \strokec2 </ul>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->service) && !empty($details->service)) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner-booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <h5><?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Extra Services:'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></h5>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <?php\cf0 \strokec4  echo listeo_get_extra_services_html($details->service); \cf8 \strokec8 //echo wpautop( $details->service); \cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($details->message) && !empty($details->message)) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner-booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <h5><?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Message:'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></h5>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <?php\cf0 \strokec4  echo wpautop(esc_html(stripslashes($details->message))); \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\
-\cb3                 \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner-booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 <h5><?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Request sent:'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></h5>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 <ul\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "highlighted"\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "price"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  echo date_i18n(get_option(\cf6 \strokec6 'date_format'\cf0 \strokec4 ), strtotime($data->created)); \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\cb3                             $date_created = explode(\cf6 \strokec6 ' '\cf0 \strokec4 , $data->created);\cb1 \
-\cb3                             \cf5 \strokec5 if\cf0 \strokec4  (isset($date_created[\cf7 \strokec7 1\cf0 \strokec4 ])) \{ \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'at'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3                             \cf2 \strokec2 <?php\cf0 \strokec4  echo date_i18n(get_option(\cf6 \strokec6 'time_format'\cf0 \strokec4 ), strtotime($date_created[\cf7 \strokec7 1\cf0 \strokec4 ]));\cb1 \
-\cb3                             \} \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 </ul>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($data->expiring) && $data->expiring != \cf6 \strokec6 '0000-00-00 00:00:00'\cf0 \strokec4  && $data->expiring != $data->created) \{ \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner-booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <h5><?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Payment due:'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></h5>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <ul\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "highlighted"\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "payment_due"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  echo date_i18n(get_option(\cf6 \strokec6 'date_format'\cf0 \strokec4 ), strtotime($data->expiring)); \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\cb3                                 $date_expiring = explode(\cf6 \strokec6 ' '\cf0 \strokec4 , $data->expiring);\cb1 \
-\cb3                                 \cf5 \strokec5 if\cf0 \strokec4  (isset($date_expiring[\cf7 \strokec7 1\cf0 \strokec4 ])) \{ \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                     \cf2 \strokec2 <?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'at'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3                                 \cf2 \strokec2 <?php\cf0 \strokec4  echo date_i18n(get_option(\cf6 \strokec6 'time_format'\cf0 \strokec4 ), strtotime($date_expiring[\cf7 \strokec7 1\cf0 \strokec4 ]));\cb1 \
-\cb3                                 \} \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 </ul>\cf0 \cb1 \strokec4 \
-\cb3                     \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \} \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($data->order_id)) \{\cb1 \
-\cb3                     $order = wc_get_order($data->order_id);\cb1 \
-\cb3                     \cf5 \strokec5 if\cf0 \strokec4  ($order) \{ \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner-booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <h5><?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Order ID:'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></h5>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 <ul\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "highlighted"\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "order"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                                     #\cf2 \strokec2 <?php\cf0 \strokec4  echo $data->order_id;\cb1 \
-\cb3                                         echo \cf6 \strokec6 " "\cf0 \strokec4 ;\cb1 \
-\cb3                                         echo $order->get_billing_first_name();\cb1 \
-\cb3                                         echo \cf6 \strokec6 " "\cf0 \strokec4 ;\cb1 \
-\cb3                                         echo $order->get_billing_last_name(); \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 </ul>\cf0 \cb1 \strokec4 \
-\cb3                         \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \}\cb1 \
-\cb3                 \} \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3                 \cf8 \strokec8 <!-- Cusotm fields -->\cf0 \cb1 \strokec4 \
-\cb3                 \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\cb3                 $fields = get_option(\cf6 \strokec6 "listeo_\{$listing_type\}_booking_fields"\cf0 \strokec4 );\cb1 \
-\cb3                 \cf5 \strokec5 if\cf0 \strokec4  ($fields) \{\cb1 \
-\
-\
-\cb3                     \cf5 \strokec5 foreach\cf0 \strokec4  ($fields as $field) \{\cb1 \
-\cb3                         \cf5 \strokec5 if\cf0 \strokec4  ($field[\cf6 \strokec6 'type'\cf0 \strokec4 ] == \cf6 \strokec6 'header'\cf0 \strokec4 ) \{\cb1 \
-\cb3                             \cf5 \strokec5 continue\cf0 \strokec4 ;\cb1 \
-\cb3                         \}\cb1 \
-\cb3                         $meta = get_booking_meta($data->ID, $field[\cf6 \strokec6 'id'\cf0 \strokec4 ]);\cb1 \
-\cb3                         \cf5 \strokec5 if\cf0 \strokec4  (!empty($meta)) \{ \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3                             \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "inner-booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <h5><?php\cf0 \strokec4  echo $field[\cf6 \strokec6 'name'\cf0 \strokec4 ] \cf2 \strokec2 ?></h5>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 <ul\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "booking-list"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                                     \cf2 \strokec2 <li\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($field[\cf6 \strokec6 'type'\cf0 \strokec4 ] == \cf6 \strokec6 'checkbox'\cf0 \strokec4 ) \{\cb1 \
-\cb3                                                     echo \cf6 \strokec6 'checkboxed'\cf0 \strokec4 ;\cb1 \
-\cb3                                                     $meta = \cf6 \strokec6 ''\cf0 \strokec4 ;\cb1 \
-\cb3                                                 \} \cf2 \strokec2 ?>\cf5 \strokec5  "\cf0 \strokec4  \cf9 \strokec9 id\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  echo $field[\cf6 \strokec6 'type'\cf0 \strokec4 ]; \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3                                         \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\cb3                                         \cf5 \strokec5 if\cf0 \strokec4  (is_array($meta)) \{\cb1 \
-\cb3                                             $i = \cf7 \strokec7 0\cf0 \strokec4 ;\cb1 \
-\cb3                                             $last =  count($meta);\cb1 \
-\cb3                                             \cf5 \strokec5 foreach\cf0 \strokec4  ($meta as $key) \{\cb1 \
-\cb3                                                 $i++;\cb1 \
-\cb3                                                 echo $field[\cf6 \strokec6 'options'\cf0 \strokec4 ][$key];\cb1 \
-\cb3                                                 \cf5 \strokec5 if\cf0 \strokec4  ($i >= \cf7 \strokec7 0\cf0 \strokec4  && $i < $last) : echo \cf6 \strokec6 ", "\cf0 \strokec4 ;\cb1 \
-\cb3                                                 \cf5 \strokec5 endif\cf0 \strokec4 ;\cb1 \
-\cb3                                             \}\cb1 \
-\cb3                                         \} \cf5 \strokec5 else\cf0 \strokec4  \{\cb1 \
-\cb3                                             \cf5 \strokec5 switch\cf0 \strokec4  ($field[\cf6 \strokec6 'type'\cf0 \strokec4 ]) \{\cb1 \
-\cb3                                                 \cf5 \strokec5 case\cf0 \strokec4  \cf6 \strokec6 'file'\cf0 \strokec4 :\cb1 \
-\cb3                                                     echo \cf6 \strokec6 '<a href="'\cf0 \strokec4  . $meta . \cf6 \strokec6 '" /> '\cf0 \strokec4  . esc_html__(\cf6 \strokec6 'Download'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ) . \cf6 \strokec6 ' '\cf0 \strokec4  . wp_basename($meta) . \cf6 \strokec6 ' </a></li>'\cf0 \strokec4 ;\cb1 \
-\cb3                                                     \cf5 \strokec5 break\cf0 \strokec4 ;\cb1 \
-\
-\cb3                                                 \cf5 \strokec5 case\cf0 \strokec4  \cf6 \strokec6 'radio'\cf0 \strokec4 :\cb1 \
-\cb3                                                     echo $field[\cf6 \strokec6 'options'\cf0 \strokec4 ][$meta];\cb1 \
-\cb3                                                     \cf5 \strokec5 break\cf0 \strokec4 ;\cb1 \
-\cb3                                                 \cf5 \strokec5 case\cf0 \strokec4  \cf6 \strokec6 'select'\cf0 \strokec4 :\cb1 \
-\cb3                                                     echo $field[\cf6 \strokec6 'options'\cf0 \strokec4 ][$meta];\cb1 \
-\cb3                                                     \cf5 \strokec5 break\cf0 \strokec4 ;\cb1 \
-\
-\cb3                                                 \cf5 \strokec5 default\cf0 \strokec4 :\cb1 \
-\cb3                                                     echo $meta;\cb1 \
-\cb3                                                     \cf5 \strokec5 break\cf0 \strokec4 ;\cb1 \
-\cb3                                             \}\cb1 \
-\cb3                                         \} \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3                                     \cf2 \strokec2 </li>\cf0 \cb1 \strokec4 \
-\cb3                                 \cf2 \strokec2 </ul>\cf0 \cb1 \strokec4 \
-\cb3                             \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\
-\cb3                 \cf2 \strokec2 <?php\cf0 \strokec4  \}\cb1 \
-\cb3                     \}\cb1 \
-\cb3                 \}\cb1 \
-\cb3                 \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\
-\
-\cb3             \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\cb3         \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\cb3     \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\cb3     \cf2 \strokec2 <div\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "buttons-to-down booking-buttons-actions"\cf2 \strokec2 >\cf0 \cb1 \strokec4 \
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($payment_method == \cf6 \strokec6 'cod'\cf0 \strokec4 ) \{ \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3             \cf2 \strokec2 <a\cf0 \strokec4  \cf9 \strokec9 href\cf0 \strokec4 =\cf5 \strokec5 "#"\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "button gray mark-as-paid"\cf0 \strokec4  \cf9 \strokec9 data-booking_id\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  echo esc_attr($data->ID); \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 ><i\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "sl sl-icon-check"\cf2 \strokec2 ></i>\cf0 \strokec4  \cf2 \strokec2 <?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Confirm Payment'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></a>\cf0 \cb1 \strokec4 \
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \} \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($show_reject) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3             \cf2 \strokec2 <a\cf0 \strokec4  \cf9 \strokec9 href\cf0 \strokec4 =\cf5 \strokec5 "#"\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "button gray reject"\cf0 \strokec4  \cf9 \strokec9 data-booking_id\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  echo esc_attr($data->ID); \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 ><i\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "sl sl-icon-close"\cf2 \strokec2 ></i>\cf0 \strokec4  \cf2 \strokec2 <?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Reject'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></a>\cf0 \cb1 \strokec4 \
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($show_cancel) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3             \cf2 \strokec2 <a\cf0 \strokec4  \cf9 \strokec9 href\cf0 \strokec4 =\cf5 \strokec5 "#"\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "button gray cancel"\cf0 \strokec4  \cf9 \strokec9 data-booking_id\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  echo esc_attr($data->ID); \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 ><i\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "sl sl-icon-close"\cf2 \strokec2 ></i>\cf0 \strokec4  \cf2 \strokec2 <?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Cancel'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></a>\cf0 \cb1 \strokec4 \
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  (isset($show_delete) && $show_delete == \cf5 \strokec5 true\cf0 \strokec4 ) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3             \cf2 \strokec2 <a\cf0 \strokec4  \cf9 \strokec9 href\cf0 \strokec4 =\cf5 \strokec5 "#"\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "button gray delete"\cf0 \strokec4  \cf9 \strokec9 data-booking_id\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  echo esc_attr($data->ID); \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 ><i\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "sl sl-icon-trash"\cf2 \strokec2 ></i>\cf0 \strokec4  \cf2 \strokec2 <?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Delete'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></a>\cf0 \cb1 \strokec4 \
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($show_approve) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3             \cf2 \strokec2 <a\cf0 \strokec4  \cf9 \strokec9 href\cf0 \strokec4 =\cf5 \strokec5 "#"\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "button gray approve"\cf0 \strokec4  \cf9 \strokec9 data-booking_id\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  echo esc_attr($data->ID); \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 ><i\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "sl sl-icon-check"\cf2 \strokec2 ></i>\cf0 \strokec4  \cf2 \strokec2 <?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Approve'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></a>\cf0 \cb1 \strokec4 \
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 if\cf0 \strokec4  ($show_renew) : \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3             \cf2 \strokec2 <a\cf0 \strokec4  \cf9 \strokec9 href\cf0 \strokec4 =\cf5 \strokec5 "#"\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "button gray renew_booking"\cf0 \strokec4  \cf9 \strokec9 data-booking_id\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  echo esc_attr($data->ID); \cf2 \strokec2 ?>\cf5 \strokec5 "\cf2 \strokec2 ><i\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "sl sl-icon-check"\cf2 \strokec2 ></i>\cf0 \strokec4  \cf2 \strokec2 <?php\cf0 \strokec4  esc_html_e(\cf6 \strokec6 'Renew'\cf0 \strokec4 , \cf6 \strokec6 'listeo_core'\cf0 \strokec4 ); \cf2 \strokec2 ?></a>\cf0 \cb1 \strokec4 \
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf5 \strokec5 endif\cf0 \strokec4 ; \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\
-\cb3         \cf2 \strokec2 <?php\cf0 \strokec4  \cf8 \strokec8 // MRJ - show call button\cf0 \cb1 \strokec4 \
-\cb3         $wa_number = get_post_meta($data->listing_id, \cf6 \strokec6 '_whatsapp'\cf0 \strokec4 , \cf5 \strokec5 true\cf0 \strokec4 );\cb1 \
-\cb3         \cf5 \strokec5 if\cf0 \strokec4  ($wa_number)\{\cb1 \
-\cb3             $wa_link = \cf6 \strokec6 'https://wa.me/'\cf0 \strokec4  . $wa_number;\cb1 \
-\cb3             \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3             \cf2 \strokec2 <a\cf0 \strokec4  \cf9 \strokec9 href\cf0 \strokec4 =\cf5 \strokec5 "\cf2 \strokec2 <?php\cf0 \strokec4  echo $wa_link; \cf2 \strokec2 ?>\cf5 \strokec5 "\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "button gray"\cf2 \strokec2 ><i\cf0 \strokec4  \cf9 \strokec9 class\cf0 \strokec4 =\cf5 \strokec5 "sl sl-icon-speech"\cf2 \strokec2 ></i>\cf0 \strokec4  Chat on Whatsapp\cf2 \strokec2 </a>\cf0 \cb1 \strokec4 \
-\cb3             \cf2 \strokec2 <?php\cf0 \cb1 \strokec4 \
-\cb3         \}\cb1 \
-\cb3         \cf2 \strokec2 ?>\cf0 \cb1 \strokec4 \
-\cb3     \cf2 \strokec2 </div>\cf0 \cb1 \strokec4 \
-\pard\pardeftab720\partightenfactor0
-\cf2 \cb3 \strokec2 </li>\cf0 \cb1 \strokec4 \
+
+endif;
+if ($data->comment == 'owner reservations') {
+	return;
 }
+$class = array();
+$tag = array();
+$show_approve = false;
+$show_reject = false;
+$show_cancel = false;
+
+$payment_method = '';
+if (isset($data->order_id) && !empty($data->order_id) && $data->status == 'confirmed') {
+	$payment_method = get_post_meta($data->order_id, '_payment_method', true);
+	if (get_option('listeo_disable_payments')) {
+		$payment_method = 'cod';
+	}
+}
+$_payment_option = get_post_meta($data->listing_id, '_payment_option', true);
+if (empty($_payment_option)) {
+	$_payment_option = 'pay_now';
+}
+if ($_payment_option == "pay_cash") {
+	$payment_method = 'cod';
+}
+
+$show_contact = (get_option('listeo_lock_contact_info_to_paid_bookings')) ? false : true;
+
+switch ($data->status) {
+	case 'waiting':
+		$class[] = 'waiting-booking';
+		$tag[] = '<span class="booking-status pending">' . esc_html__('Pending', 'listeo_core') . '</span>';
+		$show_approve = true;
+		$show_reject = true;
+		$show_renew = false;
+		break;
+
+	case 'pay_to_confirm':
+		$class[] = 'waiting-booking';
+		if ($data->price > 0) {
+			$tag[] = '<span class="booking-status unpaid">' . esc_html__('Waiting for user payment', 'listeo_core') . '</span>';
+		}
+
+		$show_approve = false;
+		$show_reject = false;
+		$show_renew = false;
+		$show_cancel = true;
+		break;
+
+	case 'confirmed':
+		$class[] = 'approved-booking';
+		$tag[] = '<span  class="booking-status">' . esc_html__('Approved', 'listeo_core') . '</span>';
+
+		if ($data->price > 0) {
+			if ($_payment_option == "pay_cash") {
+				$tag[] = '<span class="booking-status unpaid">' . esc_html__('Cash payment', 'listeo_core') . '</span>';
+			} else {
+				$tag[] = '<span class="booking-status unpaid">' . esc_html__('Unpaid', 'listeo_core') . '</span>';
+			}
+		}
+
+		$show_approve = false;
+		$show_reject = false;
+		$show_renew = false;
+		$show_cancel = true;
+		break;
+
+	case 'paid':
+
+		$class[] = 'approved-booking';
+		$tag[] = '<span class="booking-status">' . esc_html__('Approved', 'listeo_core') . '</span>';
+		if ($data->price > 0) {
+			$tag[] = '<span class="booking-status paid">' . esc_html__('Paid', 'listeo_core') . '</span>';
+		}
+		$show_approve = false;
+		$show_renew = false;
+		$show_reject = false;
+		$show_cancel = true;
+		$show_contact = true;
+		break;
+
+	case 'cancelled':
+
+		$class[] = 'canceled-booking';
+		$tag[] = '<span class="booking-status">' . esc_html__('Canceled', 'listeo_core') . '</span>';
+		$show_approve = false;
+		$show_reject = false;
+		$show_renew = false;
+		$show_delete = true;
+		break;
+
+
+	case 'expired':
+
+		$class[] = 'expired-booking';
+		$tag[] = '<span class="booking-status">' . esc_html__('Expired', 'listeo_core') . '</span>';
+		$show_approve = false;
+		$show_reject = false;
+		$show_renew = true;
+		$show_delete = true;
+		break;
+
+	default:
+		$show_approve = false;
+		$show_reject = false;
+		$show_renew = false;
+		$show_cancel = false;
+		break;
+}
+
+//get order data
+if ($data->status != 'paid' && isset($data->order_id) && !empty($data->order_id) && $data->status == 'confirmed') {
+	$order = wc_get_order($data->order_id);
+	if ($order) {
+		$payment_url = $order->get_checkout_payment_url();
+
+		$order_data = $order->get_data();
+
+		$order_status = $order_data['status'];
+	}
+	if (new DateTime() > new DateTime($data->expiring)) {
+		$payment_url = false;
+		$class[] = 'expired-booking';
+		unset($tag[1]);
+		$tag[] = '<span class="booking-status">' . esc_html__('Expired', 'listeo_core') . '</span>';
+		$show_delete = true;
+	}
+}
+
+
+?>
+<li class="<?php echo implode(' ', $class); ?>" id="booking-list-<?php echo esc_attr($data->ID); ?>">
+
+
+	<div class="list-box-listing bookings">
+		<div class="list-box-listing-content">
+			<div class="inner">
+				<h3 id="title"><a href="<?php echo get_permalink($data->listing_id); ?>"><?php echo get_the_title($data->listing_id); ?></a> <?php echo implode(' ', $tag); ?></h3>
+
+				<div class="inner-booking-list">
+					<h5><?php esc_html_e('Booking Date:', 'listeo_core'); ?></h5>
+					<ul class="booking-list">
+						<?php
+						//get post type to show proper date
+						$listing_type = get_post_meta($data->listing_id, '_listing_type', true);
+
+						if ($listing_type == 'rental') { ?>
+							<li class="highlighted" id="date"><?php echo date_i18n(get_option('date_format'), strtotime($data->date_start)); ?> - <?php echo date_i18n(get_option('date_format'), strtotime($data->date_end)); ?></li>
+
+						<?php } else if ($listing_type == 'service') {
+						?>
+							<li class="highlighted" id="date">
+								<?php echo date_i18n(get_option('date_format'), strtotime($data->date_start)); ?> <?php esc_html_e('at', 'listeo_core'); ?>
+								<?php
+								$time_start = date_i18n(get_option('time_format'), strtotime($data->date_start));
+								$time_end = date_i18n(get_option('time_format'), strtotime($data->date_end)); ?>
+
+								<?php echo $time_start ?> <?php if ($time_start != $time_end) echo '- ' . $time_end; ?></li>
+
+						<?php } else {
+							//event 
+						?>
+							<li class="highlighted" id="date">
+								<?php
+								$meta_value = get_post_meta($data->listing_id, '_event_date', true);
+								$meta_value_date = explode(' ', $meta_value, 2);
+
+								$meta_value_date[0] = str_replace('/', '-', $meta_value_date[0]);
+								$meta_value = date_i18n(get_option('date_format'), strtotime($meta_value_date[0]));
+
+
+								//echo strtotime(end($meta_value_date));
+								//echo date( get_option( 'time_format' ), strtotime(end($meta_value_date)));
+								if (isset($meta_value_date[1])) {
+									$time = str_replace('-', '', $meta_value_date[1]);
+									$meta_value .= esc_html__(' at ', 'listeo_core');
+									$meta_value .= date_i18n(get_option('time_format'), strtotime($time));
+								}
+								echo $meta_value;
+
+								$meta_value = get_post_meta($data->listing_id, '_event_date_end', true);
+								if (isset($meta_value) && !empty($meta_value)) :
+
+									$meta_value_date = explode(' ', $meta_value, 2);
+
+									$meta_value_date[0] = str_replace('/', '-', $meta_value_date[0]);
+									$meta_value = date_i18n(get_option('date_format'), strtotime($meta_value_date[0]));
+
+
+									//echo strtotime(end($meta_value_date));
+									//echo date( get_option( 'time_format' ), strtotime(end($meta_value_date)));
+									if (isset($meta_value_date[1])) {
+										$time = str_replace('-', '', $meta_value_date[1]);
+										$meta_value .= esc_html__(' at ', 'listeo_core');
+										$meta_value .= date_i18n(get_option('time_format'), strtotime($time));
+									}
+									echo ' - ' . $meta_value; ?>
+								<?php endif; ?>
+							</li>
+						<?php }
+						?>
+
+					</ul>
+				</div>
+
+				<?php $details = json_decode($data->comment);
+				if (
+					(isset($details->childrens) && $details->childrens > 0)
+					||
+					(isset($details->adults) && $details->adults > 0)
+					||
+					(isset($details->tickets) && $details->tickets > 0)
+				) { ?>
+					<div class="inner-booking-list">
+						<h5><?php esc_html_e('Booking Details:', 'listeo_core'); ?></h5>
+						<ul class="booking-list">
+							<li class="highlighted" id="details">
+								<?php if (isset($details->childrens) && $details->childrens > 0) : ?>
+									<?php printf(_n('%d Child', '%s Children', $details->childrens, 'listeo_core'), $details->childrens) ?>
+								<?php endif; ?>
+								<?php if (isset($details->adults)  && $details->adults > 0) : ?>
+									<?php printf(_n('%d Guest', '%s Guests', $details->adults, 'listeo_core'), $details->adults) ?>
+								<?php endif; ?>
+								<?php if (isset($details->tickets)  && $details->tickets > 0) : ?>
+									<?php printf(_n('%d Ticket', '%s Tickets', $details->tickets, 'listeo_core'), $details->tickets) ?>
+								<?php endif; ?>
+							</li>
+						</ul>
+					</div>
+				<?php } ?>
+
+				<?php
+				$currency_abbr = get_option('listeo_currency');
+				$currency_postion = get_option('listeo_currency_postion');
+				$currency_symbol = Listeo_Core_Listing::get_currency_symbol($currency_abbr);
+				$decimals = get_option('listeo_number_decimals', 2);
+
+				if ($data->price) : ?>
+					<div class="inner-booking-list">
+						<h5><?php esc_html_e('Price:', 'listeo_core'); ?></h5>
+						<ul class="booking-list">
+							<li class="highlighted" id="price">
+								<?php if ($currency_postion == 'before') {
+									echo $currency_symbol . ' ';
+								}
+								?>
+								<?php
+								if (is_numeric($data->price)) {
+									echo number_format_i18n($data->price, $decimals);
+								} else {
+									echo esc_html($data->price);
+								}; ?>
+								<?php if ($currency_postion == 'after') {
+									echo ' ' . $currency_symbol;
+								}  ?>
+							</li>
+						</ul>
+					</div>
+				<?php endif; ?>
+				<?php
+
+				if ($show_contact) : ?>
+					<div class="inner-booking-list">
+
+						<h5><?php esc_html_e('Client:', 'listeo_core'); ?></h5>
+						<ul class="booking-list" id="client">
+							<?php if (isset($details->first_name) || isset($details->last_name)) : ?>
+								<li id="name">
+									<a href="<?php echo get_author_posts_url($data->bookings_author); ?>"><?php if (isset($details->first_name)) echo esc_html(stripslashes($details->first_name)); ?> <?php if (isset($details->last_name)) echo esc_html(stripslashes($details->last_name)); ?></a>
+								</li>
+							<?php endif; ?>
+							<?php if ($show_contact && isset($details->email)) : ?><li id="email"><a href="mailto:<?php echo esc_attr($details->email) ?>"><?php echo esc_html($details->email); ?></a></li>
+							<?php endif; ?>
+							<?php if ($show_contact && isset($details->phone)) : ?><li id="phone"><a href="tel:<?php echo esc_attr($details->phone) ?>"><?php echo esc_html($details->phone); ?></a></li>
+							<?php endif; ?>
+						</ul>
+
+					</div>
+				<?php endif; ?>
+
+				<?php
+
+				if ($show_contact && isset($details->billing_address_1) && !empty($details->billing_address_1)) : ?>
+					<div class="inner-booking-list">
+
+						<h5><?php esc_html_e('Address:', 'listeo_core'); ?></h5>
+						<ul class="booking-list" id="client">
+
+							<?php if (isset($details->billing_address_1)) : ?>
+								<li id="billing_address_1"><?php echo esc_html(stripslashes($details->billing_address_1)); ?> </li>
+							<?php endif; ?>
+							<?php if (isset($details->billing_address_1)) : ?>
+								<li id="billing_postcode"><?php echo esc_html(stripslashes($details->billing_postcode)); ?> </li>
+							<?php endif; ?>
+							<?php if (isset($details->billing_city)) : ?>
+								<li id="billing_city"><?php echo esc_html(stripslashes($details->billing_city)); ?> </li>
+							<?php endif; ?>
+							<?php if (isset($details->billing_country)) : ?>
+								<li id="billing_country"><?php echo esc_html(stripslashes($details->billing_country)); ?> </li>
+							<?php endif; ?>
+
+						</ul>
+					</div>
+				<?php endif; ?>
+				<?php if (isset($details->service) && !empty($details->service)) : ?>
+					<div class="inner-booking-list">
+						<h5><?php esc_html_e('Extra Services:', 'listeo_core'); ?></h5>
+						<?php echo listeo_get_extra_services_html($details->service); //echo wpautop( $details->service); 
+						?>
+					</div>
+				<?php endif; ?>
+				<?php if (isset($details->message) && !empty($details->message)) : ?>
+					<div class="inner-booking-list">
+						<h5><?php esc_html_e('Message:', 'listeo_core'); ?></h5>
+						<?php echo wpautop(esc_html(stripslashes($details->message))); ?>
+					</div>
+				<?php endif; ?>
+
+
+				<div class="inner-booking-list">
+					<h5><?php esc_html_e('Request sent:', 'listeo_core'); ?></h5>
+					<ul class="booking-list">
+						<li class="highlighted" id="price">
+							<?php echo date_i18n(get_option('date_format'), strtotime($data->created)); ?>
+							<?php
+							$date_created = explode(' ', $data->created);
+							if (isset($date_created[1])) { ?>
+								<?php esc_html_e('at', 'listeo_core'); ?>
+
+							<?php echo date_i18n(get_option('time_format'), strtotime($date_created[1]));
+							} ?>
+						</li>
+					</ul>
+				</div>
+
+				<?php if (isset($data->expiring) && $data->expiring != '0000-00-00 00:00:00' && $data->expiring != $data->created) { ?>
+					<div class="inner-booking-list">
+						<h5><?php esc_html_e('Payment due:', 'listeo_core'); ?></h5>
+						<ul class="booking-list">
+							<li class="highlighted" id="payment_due">
+								<?php echo date_i18n(get_option('date_format'), strtotime($data->expiring)); ?>
+								<?php
+								$date_expiring = explode(' ', $data->expiring);
+								if (isset($date_expiring[1])) { ?>
+									<?php esc_html_e('at', 'listeo_core'); ?>
+
+								<?php echo date_i18n(get_option('time_format'), strtotime($date_expiring[1]));
+								} ?>
+							</li>
+						</ul>
+					</div>
+				<?php } ?>
+
+				<?php if (isset($data->order_id)) {
+					$order = wc_get_order($data->order_id);
+					if ($order) { ?>
+						<div class="inner-booking-list">
+							<h5><?php esc_html_e('Order ID:', 'listeo_core'); ?></h5>
+							<ul class="booking-list">
+								<li class="highlighted" id="order">
+									#<?php echo $data->order_id;
+										echo " ";
+										echo $order->get_billing_first_name();
+										echo " ";
+										echo $order->get_billing_last_name(); ?>
+								</li>
+							</ul>
+						</div>
+				<?php }
+				} ?>
+
+				<!-- Cusotm fields -->
+				<?php
+				$fields = get_option("listeo_{$listing_type}_booking_fields");
+				if ($fields) {
+
+
+					foreach ($fields as $field) {
+						if ($field['type'] == 'header') {
+							continue;
+						}
+						$meta = get_booking_meta($data->ID, $field['id']);
+						if (!empty($meta)) { ?>
+
+							<div class="inner-booking-list">
+								<h5><?php echo $field['name'] ?></h5>
+								<ul class="booking-list">
+									<li class="<?php if ($field['type'] == 'checkbox') {
+													echo 'checkboxed';
+													$meta = '';
+												} ?> " id="<?php echo $field['type']; ?>">
+										<?php
+										if (is_array($meta)) {
+											$i = 0;
+											$last =  count($meta);
+											foreach ($meta as $key) {
+												$i++;
+												echo $field['options'][$key];
+												if ($i >= 0 && $i < $last) : echo ", ";
+												endif;
+											}
+										} else {
+											switch ($field['type']) {
+												case 'file':
+													echo '<a href="' . $meta . '" /> ' . esc_html__('Download', 'listeo_core') . ' ' . wp_basename($meta) . ' </a></li>';
+													break;
+
+												case 'radio':
+													echo $field['options'][$meta];
+													break;
+												case 'select':
+													echo $field['options'][$meta];
+													break;
+
+												default:
+													echo $meta;
+													break;
+											}
+										} ?>
+									</li>
+								</ul>
+							</div>
+
+				<?php }
+					}
+				}
+				?>
+
+
+
+			</div>
+		</div>
+	</div>
+	<div class="buttons-to-down booking-buttons-actions">
+		<?php if ($payment_method == 'cod') { ?>
+			<a href="#" class="button gray mark-as-paid" data-booking_id="<?php echo esc_attr($data->ID); ?>"><i class="sl sl-icon-check"></i> <?php esc_html_e('Confirm Payment', 'listeo_core'); ?></a>
+		<?php } ?>
+
+		<?php if ($show_reject) : ?>
+			<a href="#" class="button gray reject" data-booking_id="<?php echo esc_attr($data->ID); ?>"><i class="sl sl-icon-close"></i> <?php esc_html_e('Reject', 'listeo_core'); ?></a>
+		<?php endif; ?>
+
+		<?php if ($show_cancel) : ?>
+			<a href="#" class="button gray cancel" data-booking_id="<?php echo esc_attr($data->ID); ?>"><i class="sl sl-icon-close"></i> <?php esc_html_e('Cancel', 'listeo_core'); ?></a>
+		<?php endif; ?>
+
+		<?php if (isset($show_delete) && $show_delete == true) : ?>
+			<a href="#" class="button gray delete" data-booking_id="<?php echo esc_attr($data->ID); ?>"><i class="sl sl-icon-trash"></i> <?php esc_html_e('Delete', 'listeo_core'); ?></a>
+		<?php endif; ?>
+
+		<?php if ($show_approve) : ?>
+			<a href="#" class="button gray approve" data-booking_id="<?php echo esc_attr($data->ID); ?>"><i class="sl sl-icon-check"></i> <?php esc_html_e('Approve', 'listeo_core'); ?></a>
+		<?php endif; ?>
+		<?php if ($show_renew) : ?>
+			<a href="#" class="button gray renew_booking" data-booking_id="<?php echo esc_attr($data->ID); ?>"><i class="sl sl-icon-check"></i> <?php esc_html_e('Renew', 'listeo_core'); ?></a>
+		<?php endif; ?>
+
+		<?php // MRJ - show call button
+		$wa_number = get_post_meta($data->listing_id, '_whatsapp', true);
+		if ($wa_number){
+			$wa_link = 'https://wa.me/' . $wa_number;
+			?>
+			<a href="<?php echo $wa_link; ?>" class="button gray"><i class="sl sl-icon-speech"></i> Chat on Whatsapp</a>
+			<?php
+		}
+		?>
+	</div>
+</li>
